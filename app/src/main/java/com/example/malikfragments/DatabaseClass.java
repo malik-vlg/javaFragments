@@ -2,6 +2,7 @@ package com.example.malikfragments;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
@@ -31,12 +32,12 @@ public class DatabaseClass extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String query = "CREATE TABLE " + TableName +
+            String query = "CREATE TABLE " + TableName +
                 " (" + ColumnId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ColumnTitle + " TEXT, " +
                 ColumnDescription + " TEXT);";
 
-        db.execSQL(query);
+            db.execSQL(query);
 
     }
 
@@ -63,5 +64,46 @@ public class DatabaseClass extends SQLiteOpenHelper {
             Toast.makeText(context, "Data Added Successfully", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    Cursor readAllData(){
+        String query = "SELECT * FROM " + TableName;
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (database != null){
+            cursor = database.rawQuery(query, null);
+        }
+            return cursor;
+    }
+
+    void deleteAllNotes(){
+        SQLiteDatabase database = this.getWritableDatabase();
+        String query = "DELETE FROM " + TableName;
+        database.execSQL(query);
+    }
+
+    void updateNotes(String title, String description, String id){
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(ColumnTitle, title);
+        cv.put(ColumnDescription, description);
+
+        long result = database.update(TableName, cv, "id = ?", new String[]{id});
+        if (result == -1){
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Done", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void deleteSingleItem(String id){
+        SQLiteDatabase database = this.getWritableDatabase();
+        long result = database.delete(TableName, "id = ?", new String[]{id});
+        if (result == -1){
+            Toast.makeText(context, "Item Not Deleted", Toast.LENGTH_SHORT).show();
+        } else{
+            Toast.makeText(context, "Item Deleted Successfully", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -34,13 +34,13 @@
                 android:layout_height="wrap_content"
                 android:text="This is the description"
                 android:layout_below="@+id/title"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:layout_margin="6dp"
                 android:textSize="18sp"
                 android:id="@+id/description"/>
 
         </RelativeLayout>
+
 
     </androidx.cardview.widget.CardView>
 
